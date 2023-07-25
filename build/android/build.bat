@@ -1,12 +1,16 @@
 setlocal
+@echo on
 
 if "%GITHUB_WORKFLOW%" == "" (set RUNNING_LOCALLY=1)
 
+
 if "%RUNNING_LOCALLY%" == "1" (
+    echo "Ninja"
+    set GENERATOR=Ninja
+) else (
     set GENERATOR="Visual Studio 16 2019"
-) else {
-    set GENERATOR="ninja"
-}
+)
+echo %GENERATOR%
 
 rem https://github.com/google/filament/blob/main/android/Windows.md
 mkdir out\cmake-release
@@ -16,9 +20,9 @@ cmake ^
     -DCMAKE_INSTALL_PREFIX=..\release\filament ^
     -DFILAMENT_ENABLE_JAVA=NO ^
     -DCMAKE_BUILD_TYPE=Release ^
-    ..\..
-ninja matc resgen cmgen
-ninja install
+    ..\.. || exit /b
+ninja matc resgen cmgen || exit /b
+ninja install || exit /b
 cd ..\..
 
 mkdir out\cmake-android-release-aarch64
@@ -28,8 +32,8 @@ cmake ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=..\android-release\filament ^
     -DCMAKE_TOOLCHAIN_FILE=..\..\build\toolchain-aarch64-linux-android.cmake ^
-    ..\..
-ninja install
+    ..\..  || exit /b
+ninja install || exit /b
 cd ..\..
 
 mkdir out\cmake-android-release-arm7
@@ -39,8 +43,8 @@ cmake ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=..\android-release\filament ^
     -DCMAKE_TOOLCHAIN_FILE=..\..\build\toolchain-arm7-linux-android.cmake ^
-    ..\..
-ninja install
+    ..\.. || exit /b
+ninja install || exit /b
 cd ..\..
 
 mkdir out\cmake-android-release-x86_64
@@ -50,8 +54,8 @@ cmake ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=..\android-release\filament ^
     -DCMAKE_TOOLCHAIN_FILE=..\..\build\toolchain-x86_64-linux-android.cmake ^
-    ..\..
-ninja install
+    ..\.. || exit /b
+ninja install || exit /b
 cd ..\..
 
 mkdir out\cmake-android-release-x86
@@ -61,10 +65,10 @@ cmake ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=..\android-release\filament ^
     -DCMAKE_TOOLCHAIN_FILE=..\..\build\toolchain-x86-linux-android.cmake ^
-    ..\..
-ninja install
+    ..\.. || exit /b
+ninja install || exit /b
 cd ..\..
 
 cd android
-gradlew -Pcom.google.android.filament.dist-dir=..\out\android-release\filament assembleRelease
-copy filament-android\build\outputs\aar\filament-android-release.aar ..\..\out\
+gradlew -Pcom.google.android.filament.dist-dir=..\out\android-release\filament assembleRelease || exit /b
+copy filament-android\build\outputs\aar\filament-android-release.aar ..\..\out\ || exit /b
