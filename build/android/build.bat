@@ -10,6 +10,7 @@ if "%RUNNING_LOCALLY%" == "1" (
 ) else (
     set GENERATOR="Visual Studio 16 2019"
 )
+set GENERATOR="Visual Studio 16 2019"
 echo %GENERATOR%
 
 rem https://github.com/google/filament/blob/main/android/Windows.md
