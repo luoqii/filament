@@ -1,0 +1,21 @@
+name: android-on-Windows
+
+on:
+  push:
+    branches:
+      - main
+      - release
+      - rc/**
+
+jobs:
+  build-windows:
+    name: build-windows
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name: Run build script
+        run: |
+          build\android\build.bat
+        shell: cmd
+
